@@ -31,3 +31,7 @@ jacocoTestReport {
 application {
     mainClass = 'hexlet.code.App'
 }
+
+compileJava {
+    options.release = 20
+}
