@@ -19,14 +19,20 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
-test {
-    useJUnitPlatform()
+jacoco {
+    toolVersion = "0.8.10"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
 }
-
 jacocoTestReport {
     reports {
         xml.required = true
+        csv.required = true
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
+}
+
+test {
+    useJUnitPlatform()
 }
 
 application {
