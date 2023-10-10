@@ -26,13 +26,12 @@ jacoco {
 jacocoTestReport {
     reports {
         xml.required = true
-        csv.required = true
-        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
     }
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 application {
