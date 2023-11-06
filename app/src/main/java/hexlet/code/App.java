@@ -5,6 +5,11 @@ import io.javalin.Javalin;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+import gg.jte.ContentType;
+import gg.jte.TemplateEngine;
+import io.javalin.rendering.template.JavalinJte;
+import gg.jte.resolve.ResourceCodeResolver;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -29,10 +34,18 @@ public class App {
 
         BaseRepository.dataSource  = dataSource;
 
+        JavalinJte.init(createTemplateEngine());
         Javalin app = Javalin.create(javalinConfig -> javalinConfig.plugins.enableDevLogging());
         app.get("/", ctx -> ctx.result("Hello World"));
 
         return app;
+    }
+
+    private static TemplateEngine createTemplateEngine() {
+        ClassLoader classLoader = App.class.getClassLoader();
+        ResourceCodeResolver codeResolver = new ResourceCodeResolver("templates", classLoader);
+        TemplateEngine templateEngine = TemplateEngine.create(codeResolver, ContentType.Html);
+        return templateEngine;
     }
 
     public static void main(String[] args) throws SQLException, IOException {
