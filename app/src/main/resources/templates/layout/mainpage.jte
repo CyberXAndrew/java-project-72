@@ -1,5 +1,13 @@
 @import gg.jte.Content
+@import hexlet.code.dto.urls.BuildUrlPage
+@import hexlet.code.dto.urls.UrlPage
+@import hexlet.code.dto.urls.UrlsPage
+
 @param Content content
+@param BuildUrlPage buildUrlPage = null
+@param UrlsPage urlsPage = null
+@param UrlPage urlPage = null
+
 
 <!doctype html>
 <html lang="en">
@@ -13,8 +21,22 @@
     <title>главная страница</title>
 </head>
 <body>
-    <main>
+    <nav>
+        <a href="/">Анализатор страниц</a>
+    </nav>
 
-    </main>
+    @if(buildUrlPage != null)
+        ${content}
+    @endif
+    @if(urlsPage != null)
+        ${content}
+    @endif
+    @if(urlPage != null)
+        ${content}
+    @endif
+
+    <footer>
+        <p>Created by<a href="https://github.com/CyberXAndrew">Andrew B.</a></p>
+    </footer>
 </body>
 </html>
