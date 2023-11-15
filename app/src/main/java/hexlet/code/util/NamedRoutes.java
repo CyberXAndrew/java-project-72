@@ -10,7 +10,8 @@ public class NamedRoutes {
     public static String urlPath(String id) {
         return "/urls/" + id;
     }
-    public static String urlPath(Long id) { // перегруженный для Long
-        return "/urls/" + id;
+//    public static String urlPath(Long id) {return "/urls/" + id;}
+    public static String urlChecksPath(String id) {
+        return String.format("/urls/{%s}/checks", id);
     }
 }

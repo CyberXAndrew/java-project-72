@@ -48,6 +48,8 @@ public class App {
 
         app.get(NamedRoutes.urlPath("{id}"), UrlController::show);
 
+        app.post(NamedRoutes.urlChecksPath("{id}"), UrlController::makeCheck);
+
         return app;
     }
 

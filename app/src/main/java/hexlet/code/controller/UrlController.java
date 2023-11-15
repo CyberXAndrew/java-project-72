@@ -3,19 +3,27 @@ package hexlet.code.controller;
 import hexlet.code.dto.urls.BuildUrlPage;
 import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.dto.urls.UrlsPage;
+import hexlet.code.model.UrlCheck;
 import hexlet.code.model.Url;
 import hexlet.code.repository.UrlRepository;
+
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
+import kong.unirest.core.HttpResponse;
+import kong.unirest.core.Unirest;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
 
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 
 public class UrlController {
-    public static void add(Context ctx) throws SQLException { //get /
+    public static void add(Context ctx) throws SQLException { // post "/urls"
         String rawUrl = ctx.formParam("url");
         try {
             URL url = new URL(rawUrl);
@@ -26,7 +34,8 @@ public class UrlController {
                 ctx.redirect("/urls"); // на обработчик get /urls
                 return;
             }
-            Url correctUrl = new Url(socketAddress);
+            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+            Url correctUrl = new Url(socketAddress, createdAt);
             UrlRepository.save(correctUrl);
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.redirect("/urls");
@@ -47,10 +56,29 @@ public class UrlController {
     }
 
     public static void show(Context ctx) throws SQLException {
-        String id = ctx.pathParam("id");
+        long id = Long.parseLong(ctx.pathParam("id"));
         Url url = UrlRepository.findById(id).orElseThrow(() -> new NotFoundResponse("Url with id " + id + " not found"));
         UrlPage page = new UrlPage(url);
         ctx.render("urls/show.jte", Collections.singletonMap("urlPage", page));
+    }
+
+    public static void makeCheck(Context ctx) throws SQLException {
+        long urlId = Long.parseLong(ctx.pathParam("id"));
+        Url soughtUrl = UrlRepository.findById(urlId).orElseThrow(
+                () -> new NotFoundResponse("Url with id " + urlId + " not found"));
+        String name = soughtUrl.getName();
+
+        HttpResponse<String> response = Unirest.get(name).asString();
+        Integer statusCode = response.getStatus();
+        Document document = Jsoup.parse(response.getBody());
+        String title = document.title();
+        String h1 = document.select("h1").text();
+        String description = document.select("description").text();
+        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+
+        UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
+        UrlRepository.saveCheck(urlCheck);
+        ctx.redirect("urls/show.jte");
     }
 
     private static String collectSocketAddress(URL url) {

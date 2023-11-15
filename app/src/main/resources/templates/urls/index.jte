@@ -1,5 +1,10 @@
 @import hexlet.code.dto.urls.UrlsPage
 
+@import hexlet.code.model.UrlCheck
+@import hexlet.code.repository.UrlRepository
+@import java.util.List
+
+
 @param UrlsPage urlsPage
 
 @template.layout.mainpage(urlsPage = urlsPage,
@@ -26,17 +31,23 @@
             <tbody>
             @for(var url : urlsPage.getUrls())
                 <tr>
+                    !{List<UrlCheck> checks = UrlRepository.getChecksByUrlId(url.getId());
+                        UrlCheck lastCheck = checks.isEmpty() ? null : checks.get(checks.size() - 1);}
                     <td>
                         ${url.getId()}
                     </td>
                     <td>
-                        ${url.getName()}
+                        <a href="urls/${url.getId()}">${url.getName()}</a>
                     </td>
                     <td>
-                        ${}
+                        @if(lastCheck != null)
+                            ${lastCheck.getCreatedAt().toString()}
+                        @endif
                     </td>
                     <td>
-                        ${}
+                        @if(lastCheck != null)
+                            ${lastCheck.getStatusCode().toString()}
+                        @endif
                     </td>
                 </tr>
             @endfor
