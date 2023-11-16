@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor // ?
+@AllArgsConstructor
 public class Url {
     private long id;
     private String name;

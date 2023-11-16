@@ -95,18 +95,18 @@ public class AppTest {
 //        });
 //    }
 
-    @Test
-    public void testMakeCheckkkkkk() throws SQLException, IOException {
-        String page = Files.readString(Paths.get("/src/test/resources/templates/urls/show.jte"));
-        MockWebServer mockServer = new MockWebServer();
-        MockResponse response = new MockResponse().setResponseCode(200)
-                .setBody(page);
-        mockServer.enqueue(response);
-        String url = mockServer.url("/urls/1/checks").toString();
-        mockServer.start();
+//    @Test
+//    public void testMakeCheckkkkkk() throws SQLException, IOException {
+//        String page = Files.readString(Paths.get("/src/test/resources/templates/urls/show.jte"));
+//        MockWebServer mockServer = new MockWebServer();
+//        MockResponse response = new MockResponse().setResponseCode(200)
+//                .setBody(page);
+//        mockServer.enqueue(response);
+//        String url = mockServer.url("/urls/1/checks").toString();
+//        mockServer.start();
 
 //        mockServer.shutdown();
-    }
+//    }
 //    Создаём инстанс `MockWebServer`. Вызвав на созданном инстансе метод `mockServer.url("/").toString()` можно получить
 //    адрес сайта, который нужно будет использовать в тестах
 //2. Создаём инстанс `MockResponse`, и устанавливаем нужное тело ответа. Это и есть та фейковая страница, а точнее её

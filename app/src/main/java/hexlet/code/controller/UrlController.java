@@ -48,7 +48,7 @@ public class UrlController {
 
     }
 
-    public static void index(Context ctx) throws SQLException { //вывод списка добавленных в бд урл
+    public static void index(Context ctx) throws SQLException {
         List<Url> urls = UrlRepository.getUrls();
         UrlsPage page = new UrlsPage(urls);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
@@ -71,12 +71,13 @@ public class UrlController {
         HttpResponse<String> response = Unirest.get(name).asString();
         Integer statusCode = response.getStatus();
         Document document = Jsoup.parse(response.getBody());
-        String title = document.title();
-        String h1 = document.select("h1").text();
-        String description = document.select("description").text();
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+        UrlCheck urlCheck = new UrlCheck(statusCode, urlId, createdAt);
 
-        UrlCheck urlCheck = new UrlCheck(statusCode, title, h1, description, urlId, createdAt);
+        urlCheck.setTitle(document.title().isEmpty() ? document.title() : null);
+        urlCheck.setH1(document.selectFirst("h1").text());
+        urlCheck.setDescription(document.selectFirst("meta[name=description]") != null ?
+                document.selectFirst("meta[name=content]").text() : null);
         UrlRepository.saveCheck(urlCheck);
         ctx.redirect("urls/show.jte");
     }
@@ -85,6 +86,6 @@ public class UrlController {
         String protocol = url.getProtocol();
         String host = url.getHost();
         Integer port = url.getPort() == -1 ? null : url.getPort();
-        return String.format("s%://s%:s%", protocol, host, port);
+        return port == null ? String.format("s%://s%", protocol, host) : String.format("s%://s%:port", protocol, host, port);
     }
 }
