@@ -5,6 +5,7 @@ import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.model.Url;
+import hexlet.code.repository.UrlCheckRepository;
 import hexlet.code.repository.UrlRepository;
 
 import io.javalin.http.Context;
@@ -13,6 +14,7 @@ import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 
 
 import java.net.MalformedURLException;
@@ -24,13 +26,14 @@ import java.util.List;
 
 public class UrlController {
     public static void add(Context ctx) throws SQLException { // post "/urls"
-        String rawUrl = ctx.formParam("url");
+        String rawUrl = ctx.formParam("url"); // https://www.example.com
         try {
             URL url = new URL(rawUrl);
             String socketAddress = collectSocketAddress(url);
 
             if (UrlRepository.findBySocket(socketAddress)) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
+                ctx.sessionAttribute("flash-type", "alert-info");
                 ctx.redirect("/urls"); // на обработчик get /urls
                 return;
             }
@@ -38,20 +41,23 @@ public class UrlController {
             Url correctUrl = new Url(socketAddress, createdAt);
             UrlRepository.save(correctUrl);
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
+            ctx.sessionAttribute("flash-type", "alert-success");
             ctx.redirect("/urls");
         } catch (MalformedURLException e) {
             String flash = "Некорректный URL";
+            String flashType ="alert-danger";
             BuildUrlPage page = new BuildUrlPage();
             page.setFlash(flash);
+            page.setFlashType(flashType);
             ctx.render("urls/build.jte", Collections.singletonMap("buildUrlPage", page));
         }
-
     }
 
     public static void index(Context ctx) throws SQLException {
         List<Url> urls = UrlRepository.getUrls();
         UrlsPage page = new UrlsPage(urls);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/index.jte", Collections.singletonMap("urlsPage", page));
     }
 
@@ -74,18 +80,19 @@ public class UrlController {
         Timestamp createdAt = new Timestamp(System.currentTimeMillis());
         UrlCheck urlCheck = new UrlCheck(statusCode, urlId, createdAt);
 
-        urlCheck.setTitle(document.title().isEmpty() ? document.title() : null);
-        urlCheck.setH1(document.selectFirst("h1").text());
-        urlCheck.setDescription(document.selectFirst("meta[name=description]") != null ?
-                document.selectFirst("meta[name=content]").text() : null);
-        UrlRepository.saveCheck(urlCheck);
-        ctx.redirect("urls/show.jte");
+        urlCheck.setTitle(document.title().isEmpty() ? null : document.title());
+        Element h1 = document.selectFirst("h1");
+        urlCheck.setH1(h1 == null ? null : h1.ownText());
+        urlCheck.setDescription(document.selectFirst("meta[name=description]") == null ?
+                null : document.selectFirst("meta[name=content]").text());
+        UrlCheckRepository.saveCheck(urlCheck);
+        ctx.redirect("/urls/" + urlId);
     }
 
     private static String collectSocketAddress(URL url) {
         String protocol = url.getProtocol();
         String host = url.getHost();
         Integer port = url.getPort() == -1 ? null : url.getPort();
-        return port == null ? String.format("s%://s%", protocol, host) : String.format("s%://s%:port", protocol, host, port);
+        return port == null ? (protocol + "://" + host).toLowerCase() : (protocol + "://" + host + ":" + port).toLowerCase();
     }
 }

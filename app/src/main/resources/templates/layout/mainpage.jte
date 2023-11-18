@@ -8,7 +8,6 @@
 @param UrlsPage urlsPage = null
 @param UrlPage urlPage = null
 
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,25 +17,33 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>главная страница</title>
+    <title>Главная страница</title>
 </head>
-<body>
-    <nav>
-        <a href="/">Анализатор страниц</a>
+<body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark ps-3 border-bottom border-2" style="background-color: #FFD700;">
+        <a class="navbar-brand text-dark ml-3" href="/">Анализатор страниц</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-collapse collapse show" id="navbarNav">
+            <div class="navbar-nav">
+                <a class="nav-link text-dark" href="/">Главная</a>
+                <a class="nav-link text-dark" href="/urls">Сайты</a>
+            </div>
+        </div>
     </nav>
-
+    <main class="flex-grow-1">
     @if(buildUrlPage != null)
         ${content}
-    @endif
-    @if(urlsPage != null)
+    @elseif(urlsPage != null)
+        ${content}
+    @elseif(urlPage != null)
         ${content}
     @endif
-    @if(urlPage != null)
-        ${content}
-    @endif
-
-    <footer>
-        <p>Created by<a href="https://github.com/CyberXAndrew">Andrew B.</a></p>
+    </main>
+    <footer class="footer text-center mx-auto my-auto fixed-bottom bg-light-blue border-top border-4">
+        <p>Created by<a href="https://github.com/CyberXAndrew"> Andrew B.</a></p>
     </footer>
 </body>
 </html>

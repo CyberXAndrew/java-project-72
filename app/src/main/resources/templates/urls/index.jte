@@ -1,7 +1,9 @@
 @import hexlet.code.dto.urls.UrlsPage
 
 @import hexlet.code.model.UrlCheck
-@import hexlet.code.repository.UrlRepository
+@import hexlet.code.repository.UrlCheckRepository
+@import hexlet.code.util.NamedRoutes
+@import java.sql.SQLException
 @import java.util.List
 
 
@@ -11,48 +13,58 @@
     content = @`
     @if(urlsPage.getFlash() != null)
     <div>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <p>${urlsPage.getFlash()}</p>
+        <div class="alert ${urlsPage.getFlashType()} alert-dismissible fade show" role="alert">
+            ${urlsPage.getFlash()}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     </div>
     @endif
-    <h2>Сайты</h2>
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <td>Id</td>
-                    <td>Имя</td>
-                    <td>Последняя проверка</td>
-                    <td>Код ответа</td>
-                </tr>
-            </thead>
-            <tbody>
-            @for(var url : urlsPage.getUrls())
-                <tr>
-                    !{List<UrlCheck> checks = UrlRepository.getChecksByUrlId(url.getId());
-                        UrlCheck lastCheck = checks.isEmpty() ? null : checks.get(checks.size() - 1);}
-                    <td>
-                        ${url.getId()}
-                    </td>
-                    <td>
-                        <a href="urls/${url.getId()}">${url.getName()}</a>
-                    </td>
-                    <td>
-                        @if(lastCheck != null)
-                            ${lastCheck.getCreatedAt().toString()}
-                        @endif
-                    </td>
-                    <td>
-                        @if(lastCheck != null)
-                            ${lastCheck.getStatusCode().toString()}
-                        @endif
-                    </td>
-                </tr>
-            @endfor
-            </tbody>
-        </table>
+    <div class="mx-auto">
+        <h2>Сайты</h2>
+        <div>
+            <table class="table table-bordered table-hover align-middle">
+                <thead>
+                    <tr>
+                        <td>Id</td>
+                        <td>Имя</td>
+                        <td>Последняя проверка</td>
+                        <td>Код ответа</td>
+                    </tr>
+                </thead>
+                <tbody>
+                @for(var url : urlsPage.getUrls())
+                    <tr>
+                        !{
+                        List<UrlCheck> checks;
+                        UrlCheck lastCheck;
+                        try{
+                            checks = UrlCheckRepository.getChecksByUrlId(url.getId());
+                            lastCheck = checks.isEmpty() ? null : checks.get(checks.size() - 1);
+                            } catch (SQLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                        <td>
+                            ${url.getId()}
+                        </td>
+                        <td>
+                            <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
+                        </td>
+                        <td>
+                            @if(lastCheck != null)
+                                ${lastCheck.getCreatedAt().toString()}
+                            @endif
+                        </td>
+                        <td>
+                            @if(lastCheck != null)
+                                ${lastCheck.getStatusCode().toString()}
+                            @endif
+                        </td>
+                    </tr>
+                @endfor
+                </tbody>
+            </table>
+        </div>
     </div>
 `
 )

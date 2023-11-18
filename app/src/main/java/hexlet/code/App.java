@@ -13,6 +13,7 @@ import gg.jte.ContentType;
 import gg.jte.TemplateEngine;
 import io.javalin.rendering.template.JavalinJte;
 import gg.jte.resolve.ResourceCodeResolver;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.sql.SQLException;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class App {
     public static Javalin getApp() throws IOException, SQLException {
         HikariConfig hikariConfig = new HikariConfig();
@@ -32,6 +34,7 @@ public class App {
         File file = new File(Objects.requireNonNull(url).getFile()); //  Objects.requireNonNull(
         String sql = Files.lines(file.toPath()).collect(Collectors.joining("\n"));
 
+        log.info(sql);
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
             statement.execute(sql);
@@ -64,7 +67,7 @@ public class App {
     }
 
     private static String getDatabaseUrl() {
-        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72"); //project_72 - имя базы данных
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72;"); //project_72 - имя базы данных
     }
 
     private static TemplateEngine createTemplateEngine() {
