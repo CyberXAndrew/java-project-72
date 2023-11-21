@@ -38,6 +38,8 @@ public class App {
         try (var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
             statement.execute(sql);
+        } catch (SQLException e) {
+            System.err.println(e.getMessage());
         }
 
         BaseRepository.dataSource  = dataSource;
