@@ -12,6 +12,7 @@ import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
 import kong.unirest.core.HttpResponse;
 import kong.unirest.core.Unirest;
+import kong.unirest.core.UnirestException;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -25,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class UrlController {
-    public static void add(Context ctx) throws SQLException { // post "/urls"
-        String rawUrl = ctx.formParam("url"); // https://www.example.com
+    public static void add(Context ctx) throws SQLException {
+        String rawUrl = ctx.formParam("url");
         try {
             URL url = new URL(rawUrl);
             String socketAddress = collectSocketAddress(url);
@@ -65,6 +66,8 @@ public class UrlController {
         long id = Long.parseLong(ctx.pathParam("id"));
         Url url = UrlRepository.findById(id).orElseThrow(() -> new NotFoundResponse("Url with id " + id + " not found"));
         UrlPage page = new UrlPage(url);
+        page.setFlash(ctx.consumeSessionAttribute("flash"));
+        page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/show.jte", Collections.singletonMap("urlPage", page));
     }
 
@@ -74,19 +77,29 @@ public class UrlController {
                 () -> new NotFoundResponse("Url with id " + urlId + " not found"));
         String name = soughtUrl.getName();
 
-        HttpResponse<String> response = Unirest.get(name).asString();
-        Integer statusCode = response.getStatus();
-        Document document = Jsoup.parse(response.getBody());
-        Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-        UrlCheck urlCheck = new UrlCheck(statusCode, urlId, createdAt);
+        try {
+            HttpResponse<String> response = Unirest.get(name).asString();
+            Integer statusCode = response.getStatus();
+            Document document = Jsoup.parse(response.getBody());
+            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+            UrlCheck urlCheck = new UrlCheck(statusCode, urlId, createdAt);
 
-        urlCheck.setTitle(document.title().isEmpty() ? null : document.title());
-        Element h1 = document.selectFirst("h1");
-        urlCheck.setH1(h1 == null ? null : h1.ownText());
-        urlCheck.setDescription(document.selectFirst("meta[name=description]") == null ?
-                null : document.selectFirst("meta[name=content]").text());
-        UrlCheckRepository.saveCheck(urlCheck);
-        ctx.redirect("/urls/" + urlId);
+            urlCheck.setTitle(document.title().isEmpty() ? null : document.title());
+            Element h1 = document.selectFirst("h1");
+            urlCheck.setH1(h1 == null ? null : h1.ownText());
+            urlCheck.setDescription(document.selectFirst("meta[name=description][content]") == null ?
+                    null : document.selectFirst("meta[content]").text());
+
+            UrlCheckRepository.saveCheck(urlCheck);
+            ctx.redirect("/urls/" + urlId);
+        } catch (UnirestException ex) {
+            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+            UrlCheck urlCheck = new UrlCheck(404, urlId, createdAt);
+            UrlCheckRepository.saveCheck(urlCheck);
+            ctx.sessionAttribute("flash", "Проверьте правильность домена");
+            ctx.sessionAttribute("flash-type", "alert-danger");
+            ctx.redirect("/urls/" + urlId);
+        }
     }
 
     private static String collectSocketAddress(URL url) {

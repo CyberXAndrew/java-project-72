@@ -18,10 +18,10 @@ public final class JteindexGenerated {
 					jteOutput.setContext("div", "class");
 					jteOutput.writeUserContent(urlsPage.getFlashType());
 					jteOutput.setContext("div", null);
-					jteOutput.writeContent(" alert-dismissible fade show\" role=\"alert\">\n            <p>");
-					jteOutput.setContext("p", null);
+					jteOutput.writeContent(" alert-dismissible fade show\" role=\"alert\">\n            ");
+					jteOutput.setContext("div", null);
 					jteOutput.writeUserContent(urlsPage.getFlash());
-					jteOutput.writeContent("</p>\n            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>\n        </div>\n    </div>\n    ");
+					jteOutput.writeContent("\n            <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"alert\" aria-label=\"Close\"></button>\n        </div>\n    </div>\n    ");
 				}
 				jteOutput.writeContent("\n    <div class=\"mx-auto\">\n        <h2>Сайты</h2>\n        <div>\n            <table class=\"table table-bordered table-hover align-middle\">\n                <thead>\n                    <tr>\n                        <td>Id</td>\n                        <td>Имя</td>\n                        <td>Последняя проверка</td>\n                        <td>Код ответа</td>\n                    </tr>\n                </thead>\n                <tbody>\n                ");
 				for (var url : urlsPage.getUrls()) {

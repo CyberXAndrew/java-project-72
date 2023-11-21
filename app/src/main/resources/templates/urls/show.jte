@@ -29,13 +29,23 @@
             </tr>
             </tbody>
         </table>
+        <div>
         <h3>Проверки</h3>
-        <form action="${NamedRoutes.urlChecksPath(urlPage.getUrl().getId())}" method="post">
-            <button type="button" class="btn btn-primary">Запустить проверку</button>
-        </form>
+            <form action="${NamedRoutes.urlChecksPath(urlPage.getUrl().getId())}" method="post">
+                <button type="submit" class="btn btn-primary">Запустить проверку</button>
+            </form>
+        </div>
+        @if(urlPage.getFlash() != null)
+            <div>
+                <div class="alert ${urlPage.getFlashType()} alert-dismissible fade show" role="alert">
+                    ${urlPage.getFlash()}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        @endif
         <div>
             <table class="table table-bordered table-hover align-middle">
-                <caption class="caption-top">Спискок проверок</caption>
+                <caption class="caption-top">Список проверок</caption>
                 <thead class="table-light">
                 <tr>
                     <td>Id</td>
