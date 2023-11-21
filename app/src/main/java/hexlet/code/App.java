@@ -69,7 +69,7 @@ public class App {
     }
 
     private static String getDatabaseUrl() {
-        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72;"); //project_72 - имя базы данных
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72"); //project_72 - имя базы данных
     }
 
     private static TemplateEngine createTemplateEngine() {
