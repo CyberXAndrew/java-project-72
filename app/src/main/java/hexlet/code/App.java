@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class App {
-    public static Javalin getApp() throws IOException, SQLException {
+    public static Javalin getApp() throws IOException {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl()); //project_72 - имя базы данных
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
@@ -39,7 +39,7 @@ public class App {
              var statement = connection.createStatement()) {
             statement.execute(sql);
         } catch (SQLException e) {
-            System.err.println(e.getMessage());
+            System.out.println(e.getMessage());
         }
 
         BaseRepository.dataSource  = dataSource;
@@ -58,7 +58,7 @@ public class App {
         return app;
     }
 
-    public static void main(String[] args) throws SQLException, IOException {
+    public static void main(String[] args) throws IOException {
         Javalin app = App.getApp();
         int port = Integer.parseInt(getPort());
         app.start(port);
