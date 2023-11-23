@@ -32,10 +32,14 @@ public class AppTest {
     private final String correctSocketAddress2 = "https://www.youtube.com";
 
     @BeforeEach
-    public void beforeEach() throws SQLException, IOException {
-        app = App.getApp();
-        mockServer = new MockWebServer();
-        mockServer.start();
+    public void beforeEach() {
+        try {
+            app = App.getApp();
+            mockServer = new MockWebServer();
+            mockServer.start();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
     @AfterEach
     public void afterEach() throws IOException {
