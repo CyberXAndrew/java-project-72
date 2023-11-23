@@ -13,6 +13,7 @@ import hexlet.code.model.Url;
 
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ import java.util.List;
 
 public class AppTest {
     private static Javalin app;
-    private MockWebServer mockServer;
+    private static MockWebServer mockServer;
     private final String incorrectSocketAddress = "https//www.google.com";
     private final String correctSocketAddress = "https://www.google.com";
     private final String correctSocketAddress2 = "https://www.youtube.com";
@@ -41,8 +42,8 @@ public class AppTest {
             System.out.println(e.getMessage());
         }
     }
-    @AfterEach
-    public void afterEach() throws IOException {
+    @AfterAll
+    public static void afterAll() throws IOException {
         mockServer.shutdown();
         app.stop();
     }
