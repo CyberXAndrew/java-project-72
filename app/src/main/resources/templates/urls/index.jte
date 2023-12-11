@@ -1,7 +1,8 @@
 @import hexlet.code.dto.urls.UrlsPage
 
+@import hexlet.code.model.Url
 @import hexlet.code.model.UrlCheck
-@import hexlet.code.repository.UrlCheckRepository
+@import hexlet.code.repository.UrlChecksRepository
 @import hexlet.code.util.NamedRoutes
 @import java.sql.SQLException
 @import java.util.List
@@ -32,13 +33,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                @for(var url : urlsPage.getUrls())
+                @for(Url url : urlsPage.getUrls())
                     <tr>
                         !{
                         List<UrlCheck> checks;
                         UrlCheck lastCheck;
                         try{
-                            checks = UrlCheckRepository.getChecksByUrlId(url.getId());
+                            checks = UrlChecksRepository.getChecksByUrlId(url.getId());
                             lastCheck = checks.isEmpty() ? null : checks.get(checks.size() - 1);
                             } catch (SQLException e) {
                                 throw new RuntimeException(e);

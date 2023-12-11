@@ -1,7 +1,7 @@
 package hexlet.code;
 
 import hexlet.code.controller.RootController;
-import hexlet.code.controller.UrlController;
+import hexlet.code.controller.UrlsController;
 import hexlet.code.repository.BaseRepository;
 import hexlet.code.util.NamedRoutes;
 import io.javalin.Javalin;
@@ -48,12 +48,12 @@ public class App {
 
         app.get(NamedRoutes.rootPath(), RootController::index);
 
-        app.post(NamedRoutes.urlsPath(), UrlController::add);
-        app.get(NamedRoutes.urlsPath(), UrlController::index);
+        app.post(NamedRoutes.urlsPath(), UrlsController::add);
+        app.get(NamedRoutes.urlsPath(), UrlsController::index);
 
-        app.get(NamedRoutes.urlPath("{id}"), UrlController::show);
+        app.get(NamedRoutes.urlPath("{id}"), UrlsController::show);
 
-        app.post(NamedRoutes.urlChecksPath("{id}"), UrlController::makeCheck);
+        app.post(NamedRoutes.urlChecksPath("{id}"), UrlsController::makeCheck);
 
         return app;
     }

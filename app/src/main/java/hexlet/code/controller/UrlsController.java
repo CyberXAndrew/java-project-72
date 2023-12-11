@@ -5,8 +5,8 @@ import hexlet.code.dto.urls.UrlPage;
 import hexlet.code.dto.urls.UrlsPage;
 import hexlet.code.model.UrlCheck;
 import hexlet.code.model.Url;
-import hexlet.code.repository.UrlCheckRepository;
-import hexlet.code.repository.UrlRepository;
+import hexlet.code.repository.UrlChecksRepository;
+import hexlet.code.repository.UrlsRepository;
 
 import io.javalin.http.Context;
 import io.javalin.http.NotFoundResponse;
@@ -25,14 +25,14 @@ import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.List;
 
-public class UrlController {
+public class UrlsController {
     public static void add(Context ctx) throws SQLException {
         String rawUrl = ctx.formParam("url");
         try {
             URL url = new URL(rawUrl);
             String socketAddress = collectSocketAddress(url);
 
-            if (UrlRepository.findBySocket(socketAddress)) {
+            if (UrlsRepository.findBySocket(socketAddress)) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
                 ctx.sessionAttribute("flash-type", "alert-info");
                 ctx.redirect("/urls"); // на обработчик get /urls
@@ -40,7 +40,7 @@ public class UrlController {
             }
             Timestamp createdAt = new Timestamp(System.currentTimeMillis());
             Url correctUrl = new Url(socketAddress, createdAt);
-            UrlRepository.save(correctUrl);
+            UrlsRepository.save(correctUrl);
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.sessionAttribute("flash-type", "alert-success");
             ctx.redirect("/urls");
@@ -55,7 +55,7 @@ public class UrlController {
     }
 
     public static void index(Context ctx) throws SQLException {
-        List<Url> urls = UrlRepository.getUrls();
+        List<Url> urls = UrlsRepository.getUrls();
         UrlsPage page = new UrlsPage(urls);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
@@ -64,7 +64,7 @@ public class UrlController {
 
     public static void show(Context ctx) throws SQLException {
         long id = Long.parseLong(ctx.pathParam("id"));
-        Url url = UrlRepository.findById(id).orElseThrow(() -> new NotFoundResponse("Url with id " + id + " not found"));
+        Url url = UrlsRepository.findById(id).orElseThrow(() -> new NotFoundResponse("Url with id " + id + " not found"));
         UrlPage page = new UrlPage(url);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
@@ -73,7 +73,7 @@ public class UrlController {
 
     public static void makeCheck(Context ctx) throws SQLException {
         long urlId = Long.parseLong(ctx.pathParam("id"));
-        Url soughtUrl = UrlRepository.findById(urlId).orElseThrow(
+        Url soughtUrl = UrlsRepository.findById(urlId).orElseThrow(
                 () -> new NotFoundResponse("Url with id " + urlId + " not found"));
         String name = soughtUrl.getName();
 
@@ -87,15 +87,17 @@ public class UrlController {
             urlCheck.setTitle(document.title().isEmpty() ? null : document.title());
             Element h1 = document.selectFirst("h1");
             urlCheck.setH1(h1 == null ? null : h1.ownText());
-            urlCheck.setDescription(document.selectFirst("meta[name=description][content]") == null ?
-                    null : document.selectFirst("meta[content]").text());
 
-            UrlCheckRepository.saveCheck(urlCheck);
+            Element descriptionElement = document.selectFirst("meta[name=description]");
+            String description = descriptionElement == null ? "" : descriptionElement.attr("content");
+            urlCheck.setDescription(description);
+
+            UrlChecksRepository.saveCheck(urlCheck);
             ctx.redirect("/urls/" + urlId);
         } catch (UnirestException ex) {
             Timestamp createdAt = new Timestamp(System.currentTimeMillis());
             UrlCheck urlCheck = new UrlCheck(404, urlId, createdAt);
-            UrlCheckRepository.saveCheck(urlCheck);
+            UrlChecksRepository.saveCheck(urlCheck);
             ctx.sessionAttribute("flash", "Проверьте правильность домена");
             ctx.sessionAttribute("flash-type", "alert-danger");
             ctx.redirect("/urls/" + urlId);
@@ -106,6 +108,7 @@ public class UrlController {
         String protocol = url.getProtocol();
         String host = url.getHost();
         Integer port = url.getPort() == -1 ? null : url.getPort();
-        return port == null ? (protocol + "://" + host).toLowerCase() : (protocol + "://" + host + ":" + port).toLowerCase();
+        String result = port == null ? (protocol + "://" + host) : (protocol + "://" + host + ":" + port);
+        return result.toLowerCase().trim();
     }
 }

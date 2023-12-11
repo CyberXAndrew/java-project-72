@@ -1,7 +1,7 @@
 @import hexlet.code.dto.urls.UrlPage
 
 @import hexlet.code.model.UrlCheck
-@import hexlet.code.repository.UrlCheckRepository
+@import hexlet.code.repository.UrlChecksRepository
 @import hexlet.code.util.NamedRoutes
 @import java.util.List
 @import java.sql.SQLException
@@ -60,7 +60,7 @@
                 !{
                     List<UrlCheck> urlChecks;
                     try{
-                        urlChecks = UrlCheckRepository.getChecksByUrlId(urlPage.getUrl().getId());
+                        urlChecks = UrlChecksRepository.getChecksByUrlId(urlPage.getUrl().getId());
                         } catch (SQLException e) {
                             throw new RuntimeException(e);
                         }
