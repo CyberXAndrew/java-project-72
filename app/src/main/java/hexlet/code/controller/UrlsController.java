@@ -38,8 +38,8 @@ public class UrlsController {
                 ctx.redirect("/urls"); // на обработчик get /urls
                 return;
             }
-            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-            Url correctUrl = new Url(socketAddress, createdAt);
+//            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+            Url correctUrl = new Url(socketAddress);
             UrlsRepository.save(correctUrl);
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
             ctx.sessionAttribute("flash-type", "alert-success");
@@ -63,6 +63,7 @@ public class UrlsController {
     }
 
     public static void show(Context ctx) throws SQLException {
+
         long id = Long.parseLong(ctx.pathParam("id"));
         Url url = UrlsRepository.findById(id).orElseThrow(() -> new NotFoundResponse("Url with id " + id + " not found"));
         UrlPage page = new UrlPage(url);
