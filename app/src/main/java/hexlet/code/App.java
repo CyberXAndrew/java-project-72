@@ -42,7 +42,7 @@ public class App {
             System.out.println(e.getMessage());
         }
 
-        BaseRepository.dataSource  = dataSource;
+        BaseRepository.dataSource = dataSource;
         JavalinJte.init(createTemplateEngine());
         Javalin app = Javalin.create(javalinConfig -> javalinConfig.plugins.enableDevLogging());
 
