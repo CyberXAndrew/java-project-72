@@ -12,7 +12,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,6 +50,7 @@ public class AppTest {
         JavalinTest.test(app, ((server, client) -> {
             var response = client.get("/");
             assertThat(response.code()).isEqualTo(200);
+            assert response.body() != null;
             assertThat(response.body().string()).contains("Анализатор страниц");
         }));
     }
@@ -61,6 +61,7 @@ public class AppTest {
             String requestBody = "url=" + correctSocketAddress;
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(200);
+            assert response.body() != null;
             assertThat(response.body().string()).contains("google");
             assertThat(UrlsRepository.getUrls().size()).isEqualTo(1);
             assertThat(UrlsRepository.getUrls().get(0).getName()).contains(correctSocketAddress);
@@ -73,6 +74,7 @@ public class AppTest {
             String requestBody = "url=" + incorrectSocketAddress;
             var response = client.post("/urls", requestBody);
             assertThat(response.code()).isEqualTo(200);
+            assert response.body() != null;
             assertThat(response.body().string()).contains("Некорректный URL");
             assertThat(UrlsRepository.getUrls().size()).isEqualTo(0);
         }));
@@ -87,6 +89,7 @@ public class AppTest {
             UrlsRepository.save(url2);
             var response = client.get("/urls");
             assertThat(response.code()).isEqualTo(200);
+            assert response.body() != null;
             assertThat(response.body().string()).contains("youtube").contains("google");
             assertThat(UrlsRepository.getUrls().size()).isEqualTo(2);
         }));
@@ -99,6 +102,7 @@ public class AppTest {
             UrlsRepository.save(testUrl);
             var response = client.get("/urls/1");
             assertThat(response.code()).isEqualTo(200);
+            assert response.body() != null;
             assertThat(response.body().string()).contains("google");
         });
     }
@@ -127,6 +131,7 @@ public class AppTest {
         JavalinTest.test(app, (server, client) -> {
             var response = client.post("/urls/" + testUrl.getId() + "/checks"); // запрос на создание проверки
             assertThat(response.code()).isEqualTo(200);
+            assert response.body() != null;
             assertThat(response.body().string()).contains("url");
 
             List<UrlCheck> checks = UrlChecksRepository.getChecksByUrlId(testUrl.getId());
