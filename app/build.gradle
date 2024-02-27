@@ -19,11 +19,11 @@ dependencies {
 
     implementation 'io.javalin:javalin-bundle:5.6.3'
     implementation 'org.assertj:assertj-core:3.24.2'
-    implementation 'gg.jte:jte:3.1.4' //jte
-    implementation 'io.javalin:javalin-rendering:5.6.2' // интеграция джавалин c jte
-    implementation 'com.h2database:h2:2.2.220' //h2
-    implementation 'com.zaxxer:HikariCP:5.1.0' //HicariCP
     implementation 'io.javalin:javalin:5.6.2' // javalin
+    implementation 'gg.jte:jte:3.1.4' // jte
+    implementation 'io.javalin:javalin-rendering:5.6.2' // интеграция джавалин c jte
+    implementation 'com.h2database:h2:2.2.220' // H2
+    implementation 'com.zaxxer:HikariCP:5.1.0' // HicariCP
     implementation 'org.slf4j:slf4j-simple:2.0.7' // slf4j
     implementation 'org.projectlombok:lombok:1.18.28' // lombok
     annotationProcessor 'org.projectlombok:lombok:1.18.20' // lombok annot processor
