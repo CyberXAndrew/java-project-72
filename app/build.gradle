@@ -34,18 +34,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
 }
 
-jacoco {
-    toolVersion = "0.8.10"
-    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
-}
-
-jacocoTestReport {
-    dependsOn test
-    reports {
-        xml.required = true
-    }
-}
-
 test {
     useJUnitPlatform()
     finalizedBy jacocoTestReport
@@ -56,5 +44,7 @@ application {
 }
 
 compileJava {
-    options.release = 17
+    options.release = 20
 }
+
+tasks.jacocoTestReport { reports { xml.required.set(true) } }
