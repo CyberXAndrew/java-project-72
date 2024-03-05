@@ -1,5 +1,4 @@
 plugins {
-    id 'java'
     id 'application'
     id 'jacoco'
     id("com.github.johnrengelman.shadow") version "8.1.1"
@@ -32,11 +31,6 @@ dependencies {
     implementation('com.squareup.okhttp3:okhttp:4.9.3')
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter:5.9.2'
-}
-
-test {
-    useJUnitPlatform()
-    finalizedBy jacocoTestReport
 }
 
 application {

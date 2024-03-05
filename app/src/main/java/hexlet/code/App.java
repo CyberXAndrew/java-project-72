@@ -28,6 +28,8 @@ public class App {
     public static Javalin getApp() throws IOException {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl()); //project_72 - имя базы данных
+        hikariConfig.setUsername("database123_vxfv_user");
+        hikariConfig.setPassword("sca6RMKuna0eERuMiwgEl4ONO5vOjrqK");
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
         URL url = App.class.getClassLoader().getResource("schema.sql");
