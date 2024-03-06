@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class App {
     public static Javalin getApp() throws IOException {
         HikariConfig hikariConfig = new HikariConfig();
-        hikariConfig.setJdbcUrl(getDatabaseUrl()); //project_72 - имя базы данных
+        hikariConfig.setJdbcUrl(getDatabaseUrl());
         if (getDatabaseUrl() != "jdbc:h2:mem:project-72") {
             hikariConfig.setUsername(PostgresProperties.DB_USER);
             hikariConfig.setPassword(PostgresProperties.DB_PASSWORD);
@@ -71,8 +71,8 @@ public class App {
         return System.getenv().getOrDefault("PORT", "7070");
     }
 
-    private static String getDatabaseUrl() {
-        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72"); //project_72 - имя базы данных H2
+    private static String getDatabaseUrl() { //project_72 - имя базы данных H2
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72");
     }
 
     private static TemplateEngine createTemplateEngine() {

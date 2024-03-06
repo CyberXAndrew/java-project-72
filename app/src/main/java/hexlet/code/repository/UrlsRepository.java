@@ -56,7 +56,7 @@ public class UrlsRepository extends BaseRepository {
 
     public static Optional<Url> findById(Long id) throws SQLException {
         String sql = "SELECT * FROM urls WHERE id = ?";
-        try(Connection connection = dataSource.getConnection();
+        try (Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setLong(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -76,7 +76,7 @@ public class UrlsRepository extends BaseRepository {
             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
             List<Url> urls = new ArrayList<>();
-            while(resultSet.next()) {
+            while (resultSet.next()) {
                 long id = resultSet.getLong("id");
                 String name = resultSet.getString("name");
                 Timestamp createdAt = resultSet.getTimestamp("created_at");

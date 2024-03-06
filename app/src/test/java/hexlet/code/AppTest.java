@@ -22,7 +22,7 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class AppTest {
+public final class AppTest {
     private static Javalin app;
     private static MockWebServer mockServer;
     private final String incorrectSocketAddress = "https//www.google.com";

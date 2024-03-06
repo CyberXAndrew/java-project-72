@@ -46,7 +46,7 @@ public class UrlsController {
             ctx.redirect("/urls");
         } catch (MalformedURLException e) {
             String flash = "Некорректный URL";
-            String flashType ="alert-danger";
+            String flashType = "alert-danger";
             BuildUrlPage page = new BuildUrlPage();
             page.setFlash(flash);
             page.setFlashType(flashType);
@@ -65,7 +65,8 @@ public class UrlsController {
     public static void show(Context ctx) throws SQLException {
 
         long id = Long.parseLong(ctx.pathParam("id"));
-        Url url = UrlsRepository.findById(id).orElseThrow(() -> new NotFoundResponse("Url with id " + id + " not found"));
+        Url url = UrlsRepository.findById(id).orElseThrow(() ->
+                new NotFoundResponse("Url with id " + id + " not found"));
         UrlPage page = new UrlPage(url);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));

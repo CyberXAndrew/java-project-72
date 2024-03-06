@@ -12,5 +12,5 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class BuildUrlPage extends BasePage {
-        private Url url;
+    private Url url;
 }
