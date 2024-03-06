@@ -28,8 +28,10 @@ public class App {
     public static Javalin getApp() throws IOException {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl()); //project_72 - имя базы данных
-        hikariConfig.setUsername("database123_vxfv_user");
-        hikariConfig.setPassword("sca6RMKuna0eERuMiwgEl4ONO5vOjrqK");
+        if (getDatabaseUrl() != "jdbc:h2:mem:project-72") {
+            hikariConfig.setUsername(PostgresProperties.DB_USER);
+            hikariConfig.setPassword(PostgresProperties.DB_PASSWORD);
+        }
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
         URL url = App.class.getClassLoader().getResource("schema.sql");
@@ -70,7 +72,7 @@ public class App {
     }
 
     private static String getDatabaseUrl() {
-        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72"); //project_72 - имя базы данных
+        return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72"); //project_72 - имя базы данных H2
     }
 
     private static TemplateEngine createTemplateEngine() {
