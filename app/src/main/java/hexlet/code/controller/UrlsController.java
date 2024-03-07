@@ -23,7 +23,9 @@ import java.net.URL;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class UrlsController {
     public static void add(Context ctx) throws SQLException {
@@ -54,19 +56,26 @@ public class UrlsController {
     }
 
     public static void index(Context ctx) throws SQLException {
+        Map<Url, List<UrlCheck>> map = new HashMap<>();
+
         List<Url> urls = UrlsRepository.getUrls();
-        UrlsPage page = new UrlsPage(urls);
+        for (Url url : urls) {
+            List<UrlCheck> checks = UrlChecksRepository.getChecksByUrlId(url.getId());
+            map.put(url, checks);
+        }
+        UrlsPage page = new UrlsPage(map);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/index.jte", Collections.singletonMap("urlsPage", page));
     }
 
     public static void show(Context ctx) throws SQLException {
-
         long id = Long.parseLong(ctx.pathParam("id"));
         Url url = UrlsRepository.findById(id).orElseThrow(() ->
                 new NotFoundResponse("Url with id " + id + " not found"));
-        UrlPage page = new UrlPage(url);
+        List<UrlCheck> urlChecks = UrlChecksRepository.getChecksByUrlId(id);
+        UrlPage page = new UrlPage(url, urlChecks);
+
         page.setFlash(ctx.consumeSessionAttribute("flash"));
         page.setFlashType(ctx.consumeSessionAttribute("flash-type"));
         ctx.render("urls/show.jte", Collections.singletonMap("urlPage", page));

@@ -1,5 +1,6 @@
 @import hexlet.code.dto.urls.UrlPage
 
+@import hexlet.code.model.Url
 @import hexlet.code.model.UrlCheck
 @import hexlet.code.repository.UrlChecksRepository
 @import hexlet.code.util.NamedRoutes
@@ -10,28 +11,32 @@
 
 @template.layout.mainpage(urlPage = urlPage,
     content = @`
-    @if(urlPage.getUrl() != null)
+    !{
+        Url url = urlPage.getUrl();
+        List<UrlCheck> urlChecks = urlPage.getUrlChecks();
+        }
+    @if(url != null)
     <div>
-        <h3>Сайт: ${urlPage.getUrl().getName()}</h3>
+        <h3>Сайт: ${url.getName()}</h3>
         <table class="table table-bordered align-middle">
             <tbody>
             <tr>
                 <td>Id</td>
-                <td>${urlPage.getUrl().getId()}</td>
+                <td>${url.getId()}</td>
             </tr>
             <tr>
                 <td>Имя</td>
-                <td>${urlPage.getUrl().getName()}</td>
+                <td>${url.getName()}</td>
             </tr>
             <tr>
                 <td>Дата создания</td>
-                <td>${urlPage.getUrl().getCreatedAt().toString()}</td>
+                <td>${url.getCreatedAt().toString()}</td>
             </tr>
             </tbody>
         </table>
         <div>
         <h3>Проверки</h3>
-            <form action="${NamedRoutes.urlChecksPath(urlPage.getUrl().getId())}" method="post">
+            <form action="${NamedRoutes.urlChecksPath(url.getId())}" method="post">
                 <button type="submit" class="btn btn-primary">Запустить проверку</button>
             </form>
         </div>
@@ -57,14 +62,14 @@
                 </tr>
                 </thead>
                 <tbody>
-                !{
-                    List<UrlCheck> urlChecks;
-                    try{
-                        urlChecks = UrlChecksRepository.getChecksByUrlId(urlPage.getUrl().getId());
-                        } catch (SQLException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }
+<%--                !{--%>
+<%--                    List<UrlCheck> urlChecks;--%>
+<%--                    try{--%>
+<%--                        urlChecks = UrlChecksRepository.getChecksByUrlId(urlPage.getUrl().getId());--%>
+<%--                        } catch (SQLException e) {--%>
+<%--                            throw new RuntimeException(e);--%>
+<%--                        }--%>
+<%--                    }--%>
                 @if(!urlChecks.isEmpty())
                     @for(var check : urlChecks)
                     <tr>
