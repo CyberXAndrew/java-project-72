@@ -29,13 +29,13 @@ public class App {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
         if (getDatabaseUrl() != "jdbc:h2:mem:project-72") {
-            hikariConfig.setUsername(PostgresProperties.DB_USER);
-            hikariConfig.setPassword(PostgresProperties.DB_PASSWORD);
+            hikariConfig.setUsername(System.getenv().get("JDBC_DATABASE_USERNAME"));
+            hikariConfig.setPassword(System.getenv().get("JDBC_DATABASE_PASSWORD"));
         }
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
         URL url = App.class.getClassLoader().getResource("schema.sql");
-        File file = new File(Objects.requireNonNull(url).getFile()); //  Objects.requireNonNull(
+        File file = new File(Objects.requireNonNull(url).getFile());
         String sql = Files.lines(file.toPath()).collect(Collectors.joining("\n"));
 
         log.info(sql);
@@ -71,7 +71,7 @@ public class App {
         return System.getenv().getOrDefault("PORT", "7070");
     }
 
-    private static String getDatabaseUrl() { //project_72 - имя базы данных H2
+    private static String getDatabaseUrl() {
         return System.getenv().getOrDefault("JDBC_DATABASE_URL", "jdbc:h2:mem:project-72");
     }
 

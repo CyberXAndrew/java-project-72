@@ -86,7 +86,6 @@ public class UrlsRepository extends BaseRepository {
                 String name = resultSet.getString("name");
                 Timestamp createdAt = resultSet.getTimestamp("created_at");
                 Url url = new Url(id, name, createdAt);
-//                url.setId(id);
                 urls.add(url);
             }
             return urls;

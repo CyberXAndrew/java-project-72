@@ -35,10 +35,9 @@ public class UrlsController {
             if (UrlsRepository.findBySocket(socketAddress)) {
                 ctx.sessionAttribute("flash", "Страница уже существует");
                 ctx.sessionAttribute("flash-type", "alert-info");
-                ctx.redirect("/urls"); // на обработчик get /urls
+                ctx.redirect("/urls");
                 return;
             }
-//            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
             Url correctUrl = new Url(socketAddress);
             UrlsRepository.save(correctUrl);
             ctx.sessionAttribute("flash", "Страница успешно добавлена");
