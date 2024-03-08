@@ -7,7 +7,7 @@
 Page Analyzer – a website that analyzes whether the specified pages are suitable for SEO.
 
 The application checks the availability of a URL at the moment it is requested. 
-Paste an interesting URL into the form on the main page and you will receive information about the URL's status.
+Paste an interesting URL into the form on the main page, and you will receive information about the URL's status.
 The request returns the following details:
 1. Response status code
 2. Page title 
@@ -40,7 +40,7 @@ All previous requests will be stored in the history for later reference.
 ### Demonstration
 #### Main page
 
-![Main page](https://github.com/CyberXAndrew/java-project-72/app/previewscreenshots/01.png)
+![Main page](https://github.com/CyberXAndrew/java-project-72/blob/main/app/previewscreenshots/01.png)
 
 #### List of pages to check
 
