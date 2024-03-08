@@ -22,13 +22,14 @@ import java.nio.file.Files;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Slf4j
 public class App {
-    public static Javalin getApp() throws IOException {
+    public static Javalin getApp() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(getDatabaseUrl());
-        if (getDatabaseUrl() != "jdbc:h2:mem:project-72") {
+        if (!Objects.equals(getDatabaseUrl(), "jdbc:h2:mem:project-72")) {
             hikariConfig.setUsername(System.getenv().get("JDBC_DATABASE_USERNAME"));
             hikariConfig.setPassword(System.getenv().get("JDBC_DATABASE_PASSWORD"));
         }
@@ -36,14 +37,15 @@ public class App {
 
         URL url = App.class.getClassLoader().getResource("schema.sql");
         File file = new File(Objects.requireNonNull(url).getFile());
-        String sql = Files.lines(file.toPath()).collect(Collectors.joining("\n"));
 
-        log.info(sql);
-        try (var connection = dataSource.getConnection();
+        try (Stream<String> lines = Files.lines(file.toPath());
+             var connection = dataSource.getConnection();
              var statement = connection.createStatement()) {
+            String sql = lines.collect(Collectors.joining("\n"));
+            log.info(sql);
             statement.execute(sql);
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        } catch (IOException | SQLException ex) {
+            log.error(ex.getMessage());
         }
 
         BaseRepository.dataSource = dataSource;
@@ -61,7 +63,7 @@ public class App {
         return app;
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         Javalin app = App.getApp();
         int port = Integer.parseInt(getPort());
         app.start(port);
