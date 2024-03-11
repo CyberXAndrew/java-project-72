@@ -15,14 +15,13 @@ import io.javalin.rendering.template.JavalinJte;
 import gg.jte.resolve.ResourceCodeResolver;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URL;
-import java.nio.file.Files;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 public class App {
@@ -35,17 +34,17 @@ public class App {
         }
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
-        URL url = App.class.getClassLoader().getResource("schema.sql");
-        File file = new File(Objects.requireNonNull(url).getFile());
-
-        try (Stream<String> lines = Files.lines(file.toPath());
-             var connection = dataSource.getConnection();
-             var statement = connection.createStatement()) {
-            String sql = lines.collect(Collectors.joining("\n"));
-            log.info(sql);
-            statement.execute(sql);
-        } catch (IOException | SQLException ex) {
-            log.error(ex.getMessage());
+        try {
+            String sql = readResourceFile("schema.sql");
+            try (var connection = dataSource.getConnection();
+                 var statement = connection.createStatement()) {
+                statement.execute(sql);
+                log.info(sql);
+            } catch (SQLException ex) {
+                log.error(ex.getMessage());
+            }
+        } catch (IOException ex) {
+            ex.getMessage();
         }
 
         BaseRepository.dataSource = dataSource;
@@ -61,6 +60,13 @@ public class App {
         app.post(NamedRoutes.urlChecksPath("{id}"), UrlsController::makeCheck);
 
         return app;
+    }
+
+    private static String readResourceFile(String fileName) throws IOException {
+        var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+            return reader.lines().collect(Collectors.joining("\n"));
+        }
     }
 
     public static void main(String[] args) {
