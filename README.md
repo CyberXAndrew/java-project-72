@@ -40,13 +40,13 @@ All previous requests will be stored in the history for later reference.
 ### Demonstration
 #### Main page
 
-![Main page](https://github.com/CyberXAndrew/java-project-72/blob/main/app/previewscreenshots/01.png)
+![Main page](https://github.com/CyberXAndrew/java-project-72/blob/main/previewscreenshots/01.png)
 
 #### List of pages to check
 
-![List of pages to check](https://github.com/CyberXAndrew/java-project-72/blob/main/app/previewscreenshots/02.png)
+![List of pages to check](https://github.com/CyberXAndrew/java-project-72/blob/main/previewscreenshots/02.png)
 
 #### Completed check
 
-![Completed check](https://github.com/CyberXAndrew/java-project-72/blob/main/app/previewscreenshots/03.png)
+![Completed check](https://github.com/CyberXAndrew/java-project-72/blob/main/previewscreenshots/03.png)
 

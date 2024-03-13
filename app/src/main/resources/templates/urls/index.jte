@@ -1,16 +1,11 @@
 @import hexlet.code.dto.urls.UrlsPage
 
-<%--@import hexlet.code.model.Url--%>
-<%--@import hexlet.code.model.UrlCheck--%>
-<%--@import hexlet.code.repository.UrlChecksRepository--%>
 @import hexlet.code.model.Url
 @import hexlet.code.model.UrlCheck
 @import hexlet.code.util.NamedRoutes
 @import kotlin.reflect.jvm.internal.impl.util.Check
 @import java.util.List
 @import java.util.Map
-<%--@import java.sql.SQLException--%>
-<%--@import java.util.List--%>
 
 @param UrlsPage urlsPage
 
@@ -44,16 +39,6 @@
                         UrlCheck lastCheck = checks.isEmpty() ? null : urlMap.getValue().get(checks.size() - 1);
                         }
                     <tr>
-<%--                        !{--%>
-<%--                        List<UrlCheck> checks;--%>
-<%--                        UrlCheck lastCheck;--%>
-<%--                        try{--%>
-<%--                            checks = UrlChecksRepository.getChecksByUrlId(urlMap.getId());--%>
-<%--                            lastCheck = checks.isEmpty() ? null : checks.get(checks.size() - 1);--%>
-<%--                            } catch (SQLException e) {--%>
-<%--                                throw new RuntimeException(e);--%>
-<%--                            }--%>
-<%--                        }--%>
                         <td>
                             ${url.getId()}
                         </td>

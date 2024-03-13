@@ -2,10 +2,8 @@
 
 @import hexlet.code.model.Url
 @import hexlet.code.model.UrlCheck
-@import hexlet.code.repository.UrlChecksRepository
 @import hexlet.code.util.NamedRoutes
 @import java.util.List
-@import java.sql.SQLException
 
 @param UrlPage urlPage
 
@@ -62,14 +60,6 @@
                 </tr>
                 </thead>
                 <tbody>
-<%--                !{--%>
-<%--                    List<UrlCheck> urlChecks;--%>
-<%--                    try{--%>
-<%--                        urlChecks = UrlChecksRepository.getChecksByUrlId(urlPage.getUrl().getId());--%>
-<%--                        } catch (SQLException e) {--%>
-<%--                            throw new RuntimeException(e);--%>
-<%--                        }--%>
-<%--                    }--%>
                 @if(!urlChecks.isEmpty())
                     @for(var check : urlChecks)
                     <tr>

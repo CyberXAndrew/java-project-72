@@ -1,6 +1,7 @@
 plugins {
     id 'application'
     id 'jacoco'
+    id 'checkstyle'
     id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
@@ -42,6 +43,14 @@ application {
 
 compileJava {
     options.release = 20
+}
+
+test {
+    useJUnitPlatform()
+    finalizedBy jacocoTestReport
+}
+jacocoTestReport {
+    dependsOn test
 }
 
 tasks.jacocoTestReport { reports { xml.required.set(true) } }

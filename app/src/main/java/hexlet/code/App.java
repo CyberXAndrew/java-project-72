@@ -39,9 +39,10 @@ public class App {
             try (var connection = dataSource.getConnection();
                  var statement = connection.createStatement()) {
                 statement.execute(sql);
-                log.info(sql);
+//                log.info(sql);
             } catch (SQLException ex) {
-                log.error(ex.getMessage());
+                ex.getMessage();
+//                log.error(ex.getMessage());
             }
         } catch (IOException ex) {
             ex.getMessage();
