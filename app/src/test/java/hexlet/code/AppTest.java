@@ -46,7 +46,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testMainPage() { // RootController::index
+    public void testMainPage() {
         JavalinTest.test(app, ((server, client) -> {
             var response = client.get("/");
             assertThat(response.code()).isEqualTo(200);
@@ -56,7 +56,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testAddUrl() { // UrlController::add
+    public void testAddUrl() {
         JavalinTest.test(app, ((server, client) -> {
             String requestBody = "url=" + correctSocketAddress;
             var response = client.post("/urls", requestBody);
@@ -66,7 +66,7 @@ public final class AppTest {
             assertThat(UrlsRepository.getUrls().size()).isEqualTo(1);
             assertThat(UrlsRepository.getUrls().get(0).getName()).contains(correctSocketAddress);
         }));
-    } // должен проверять, что нужная сущность была добавлена в БД и отображается на странице
+    }
 
     @Test
     public void testAddUrlNegative() {
@@ -81,7 +81,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testUrlsPage() { // UrlController::index
+    public void testUrlsPage() {
         JavalinTest.test(app, ((server, client) -> {
             Url url1 = new Url(correctSocketAddress2, createTimestamp());
             Url url2 = new Url(correctSocketAddress, createTimestamp());
@@ -96,7 +96,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testUrlPage() { //UrlController::show
+    public void testUrlPage() {
         JavalinTest.test(app, (server, client) -> {
             Url testUrl = new Url(correctSocketAddress, createTimestamp());
             UrlsRepository.save(testUrl);
@@ -108,7 +108,7 @@ public final class AppTest {
     }
 
     @Test
-    public void testUrlNotFound() { // UrlController::show
+    public void testUrlNotFound() {
         JavalinTest.test(app, (server, client) -> {
             var unexistingUrlId = 999;
             var response = client.get("/urls/" + unexistingUrlId);
@@ -129,7 +129,7 @@ public final class AppTest {
         UrlsRepository.save(testUrl);
 
         JavalinTest.test(app, (server, client) -> {
-            var response = client.post("/urls/" + testUrl.getId() + "/checks"); // запрос на создание проверки
+            var response = client.post("/urls/" + testUrl.getId() + "/checks");
             assertThat(response.code()).isEqualTo(200);
             assert response.body() != null;
             assertThat(response.body().string()).contains("url");
@@ -141,7 +141,6 @@ public final class AppTest {
             assertThat(lastCheck.getStatusCode()).isEqualTo(200);
             assertThat(lastCheck.getTitle()).isEqualTo("Sample title");
             assertThat(lastCheck.getH1()).isEqualTo("Sample header");
-//            assertThat(lastCheck.getDescription()).contains("Sample description"); // находит пустую строку - почему?
         });
     }
 

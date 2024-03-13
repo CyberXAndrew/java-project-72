@@ -39,17 +39,18 @@ public class UrlsRepository extends BaseRepository {
             return resultSet.next();
         }
     }
+
     public static Optional<Url> findByName(String urlName) throws SQLException {
-        var sql = "SELECT * FROM urls WHERE name = ?";
-        try (var conn = dataSource.getConnection();
-             var stmt = conn.prepareStatement(sql)) {
+        String  sql = "SELECT * FROM urls WHERE name = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, urlName);
-            var resultSet = stmt.executeQuery();
+            ResultSet resultSet = stmt.executeQuery();
             if (resultSet.next()) {
-                var name = resultSet.getString("name");
-                var createdAt = resultSet.getTimestamp("created_at");
-                var id = resultSet.getLong("id");
-                var url = new Url(name);
+                String name = resultSet.getString("name");
+                Timestamp createdAt = resultSet.getTimestamp("created_at");
+                Long id = resultSet.getLong("id");
+                Url url = new Url(name);
                 url.setId(id);
                 url.setCreatedAt(createdAt);
 

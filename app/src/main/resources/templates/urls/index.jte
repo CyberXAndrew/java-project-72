@@ -3,8 +3,6 @@
 @import hexlet.code.model.Url
 @import hexlet.code.model.UrlCheck
 @import hexlet.code.util.NamedRoutes
-@import kotlin.reflect.jvm.internal.impl.util.Check
-@import java.util.List
 @import java.util.Map
 
 @param UrlsPage urlsPage
@@ -32,11 +30,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                @for(Map.Entry<Url, List<UrlCheck>> urlMap : urlsPage.getMap().entrySet())
+                @for(Map.Entry<Url, UrlCheck> urlMap : urlsPage.getMap().entrySet())
                     !{
-                        List<UrlCheck> checks = urlMap.getValue();
                         Url url = urlMap.getKey();
-                        UrlCheck lastCheck = checks.isEmpty() ? null : urlMap.getValue().get(checks.size() - 1);
+                        UrlCheck lastCheck = urlMap.getValue();
                         }
                     <tr>
                         <td>
@@ -46,10 +43,8 @@
                             <a href="${NamedRoutes.urlPath(url.getId())}">${url.getName()}</a>
                         </td>
                         <td>
-                            @if(checks != null)
-                                @if(lastCheck != null)
-                                    ${lastCheck.getCreatedAt().toString()}
-                                @endif
+                            @if(lastCheck != null)
+                                ${lastCheck.getCreatedAt().toString()}
                             @endif
                         </td>
                         <td>

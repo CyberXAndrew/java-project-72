@@ -17,15 +17,15 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static hexlet.code.repository.UrlChecksRepository.findLatestChecks;
 
 public class UrlsController {
     public static void add(Context ctx) throws SQLException {
@@ -56,12 +56,12 @@ public class UrlsController {
     }
 
     public static void index(Context ctx) throws SQLException {
-        Map<Url, List<UrlCheck>> map = new HashMap<>();
+        Map<Url, UrlCheck> map = new HashMap<>();
 
         List<Url> urls = UrlsRepository.getUrls();
+        Map<Long, UrlCheck> latestChecks = findLatestChecks();
         for (Url url : urls) {
-            List<UrlCheck> checks = UrlChecksRepository.getChecksByUrlId(url.getId());
-            map.put(url, checks);
+            map.put(url, latestChecks.get(url.getId()));
         }
         UrlsPage page = new UrlsPage(map);
         page.setFlash(ctx.consumeSessionAttribute("flash"));
@@ -91,8 +91,7 @@ public class UrlsController {
             HttpResponse<String> response = Unirest.get(name).asString();
             Integer statusCode = response.getStatus();
             Document document = Jsoup.parse(response.getBody());
-            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-            UrlCheck urlCheck = new UrlCheck(statusCode, urlId, createdAt);
+            UrlCheck urlCheck = new UrlCheck(statusCode, urlId);
 
             urlCheck.setTitle(document.title().isEmpty() ? null : document.title());
             Element h1 = document.selectFirst("h1");
@@ -105,8 +104,7 @@ public class UrlsController {
             UrlChecksRepository.saveCheck(urlCheck);
             ctx.redirect("/urls/" + urlId);
         } catch (UnirestException ex) {
-            Timestamp createdAt = new Timestamp(System.currentTimeMillis());
-            UrlCheck urlCheck = new UrlCheck(404, urlId, createdAt);
+            UrlCheck urlCheck = new UrlCheck(404, urlId);
             UrlChecksRepository.saveCheck(urlCheck);
             ctx.sessionAttribute("flash", "Проверьте правильность домена");
             ctx.sessionAttribute("flash-type", "alert-danger");

@@ -35,17 +35,16 @@ public class App {
         HikariDataSource dataSource = new HikariDataSource(hikariConfig);
 
         try {
-            String sql = readResourceFile("schema.sql");
+            String sql = readResourceFile();
             try (var connection = dataSource.getConnection();
                  var statement = connection.createStatement()) {
                 statement.execute(sql);
-//                log.info(sql);
+                log.info(sql);
             } catch (SQLException ex) {
-                ex.getMessage();
-//                log.error(ex.getMessage());
+                log.error(ex.getMessage());
             }
         } catch (IOException ex) {
-            ex.getMessage();
+            log.error(ex.getMessage());
         }
 
         BaseRepository.dataSource = dataSource;
@@ -63,8 +62,9 @@ public class App {
         return app;
     }
 
-    private static String readResourceFile(String fileName) throws IOException {
-        var inputStream = App.class.getClassLoader().getResourceAsStream(fileName);
+    private static String readResourceFile() throws IOException {
+        var inputStream = App.class.getClassLoader().getResourceAsStream("schema.sql");
+        assert inputStream != null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
         }

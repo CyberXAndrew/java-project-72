@@ -49,4 +49,3 @@ All previous requests will be stored in the history for later reference.
 #### Completed check
 
 ![Completed check](https://github.com/CyberXAndrew/java-project-72/blob/main/previewscreenshots/03.png)
-
